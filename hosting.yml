@@ -1,0 +1,78 @@
+version: "3"
+
+# a couple of services that are generaly useful, remember to set up your .env file first 
+services:
+  heimdall:
+    image: linuxserver/heimdall
+    container_name: heimdall
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DATADIR}/heimdall:/config
+    ports:
+      - 9080:80
+      - 9443:443
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "6080:80/tcp"
+      - "6443:443/tcp"
+    environment:
+      TZ: ${TZ}
+      WEBPASSWORD: ${PH_WEBPASSWORD}
+    volumes:
+       - '${DATADIR}/pihole/etc-pihole/:/etc/pihole/'
+       - '${DATADIR}/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    cap_add:
+      - NET_ADMIN
+    dns:
+      - 127.0.0.1
+      - 46.182.19.48
+    restart: unless-stopped
+
+  # alternative unifi image. One is enough
+  #unifi:
+  #  image: ryansch/unifi-rpi:latest
+  #  container_name: unifi
+  #  restart: unless-stopped
+  #  network_mode: host # for broadcasting and to avoid having to map all of those ports
+  #  # Uncomment the following to set java options
+  #  # environment:
+  #  #   JAVA_OPTS: -Xmx512M
+  #  volumes:
+  #    - ${DATADIR}/unifi/config:/var/lib/unifi
+  #    - ${DATADIR}/unifi/log:/usr/lib/unifi/logs
+  #    - ${DATADIR}/unifi/log2:/var/log/unifi
+  #    - ${DATADIR}/unifi/run:/usr/lib/unifi/run
+  #    - ${DATADIR}/unifi/run2:/run/unifi
+  #    - ${DATADIR}/unifi/work:/usr/lib/unifi/work
+
+  unifi-controller:
+    image: ghcr.io/linuxserver/unifi-controller:armhf-latest
+    container_name: unifi-controller
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - MEM_LIMIT=512M #optional
+    volumes:
+      - ${DATADIR}/unifi-controller:/config
+    ports:
+      - 3478:3478/udp
+      - 10001:10001/udp
+      - 8080:8080
+      - 8443:8443
+      - 1900:1900/udp
+      - 8843:8843
+      - 8880:8880
+      - 6789:6789
+      - 5514:5514

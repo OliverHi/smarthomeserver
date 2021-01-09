@@ -1,0 +1,97 @@
+version: "3"
+
+# a couple of services for your smarthome, remember to set up your .env file first
+services:
+  mosquitto:
+    image: "eclipse-mosquitto:1.6"
+    restart: unless-stopped
+    volumes:
+      - "${DATADIR}/mosquitto/config:/mosquitto/config"
+      - "${DATADIR}/mosquitto/data:/mosquitto/data"
+      - "${DATADIR}/mosquitto/log:/mosquitto/log"
+    ports:
+      - 1883:1883
+
+  grafana:
+    image: "grafana/grafana:latest"
+    restart: unless-stopped
+    user: "$PUID:$PGID"
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    volumes:
+      - "${DATADIR}/grafana/data:/var/lib/grafana"
+    ports:
+      - 3000:3000
+
+  influxdb:
+    image: "influxdb:1.8"
+    restart: unless-stopped
+    volumes:
+      - "${DATADIR}/influxdb/data:/var/lib/influxdb"
+    healthcheck:
+      test: ["CMD", "curl", "-sI", "http://127.0.0.1:8086/ping"]
+      interval: 30s
+      timeout: 1s
+      retries: 24
+
+  tasmoadmin:
+    image: "raymondmm/tasmoadmin"
+    restart: unless-stopped
+    volumes:
+      - "${DATADIR}/tasmoadmin:/data"
+    ports:
+      - 3080:80
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt
+    depends_on:
+      mosquitto:
+        condition: service_started
+    restart: unless-stopped
+    volumes:
+      - ${DATADIR}/zigbee2mqtt/data:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    environment:
+      - TZ=${TZ}
+ 
+  zigbee2mqttAssistant:
+    image: carldebilly/zigbee2mqttassistant
+    restart: unless-stopped
+    depends_on:
+      zigbee2mqtt:
+        condition: service_started
+    environment:
+      - Z2MA_SETTINGS__MQTTSERVER=mosquitto
+      - TZ=${TZ}
+    ports:
+      - 8880:80
+
+  homeassistant:
+    container_name: homeassistant
+    restart: unless-stopped
+    image: homeassistant/raspberrypi4-homeassistant
+    #devices:
+    #  - /dev/ttyUSB0:/dev/ttyUSB0
+    #  - /dev/ttyUSB1:/dev/ttyUSB1
+    #  - /dev/ttyACM0:/dev/ttyACM0
+    volumes:
+      - ${DATADIR}/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /dev/serial/by-id/:/dev/serial/by-id/
+    # alternative needed for auto discovery, bluetooth,...
+    #network_mode: host
+    #privileged: true
+    depends_on:
+      influxdb:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    ports:
+      - 8123:8123
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
