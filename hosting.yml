@@ -57,7 +57,7 @@ services:
   #    - ${DATADIR}/unifi/work:/usr/lib/unifi/work
 
   unifi-controller:
-    image: ghcr.io/linuxserver/unifi-controller:armhf-latest
+    image: ghcr.io/linuxserver/unifi-controller:arm32v7-latest
     container_name: unifi-controller
     restart: unless-stopped
     environment:
