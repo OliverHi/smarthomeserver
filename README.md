@@ -8,7 +8,9 @@ The smart home market is really fragmented. Using different gateways and Apps fr
 I am running this on a Raspberry Pi but as these are Docker containers you can run them on pretty much any platform.
 
 ## How to start
-Create a folder to hold all your docker data. Then clone this repository and update the .env file. Change the password and IDs and update the path to the folder you just created. 
+Create a folder to hold all your docker data. Then clone this repository and update the .env file. Change the password and IDs and update the path to the folder you just created.
+
+Be sure to update the email related settings if you want to use notifications for automatic container updates. If you have done that uncomment the `WATCHTOWER_NOTIFICATIONS` related variables in the hosting.yml file.
 
 Then you can start the containers via docker compose.
 ```
@@ -45,6 +47,7 @@ In the hosting.yml:
 | Heimdall  | 9080  | - |
 | PiHole  | 6080  | There is a nice in-depth guide [here](https://www.smarthomebeginner.com/pi-hole-setup-guide/) |
 | Unifi controller | 8080  | Just follow the setup wizard |
+| Watchtower | - | This is set up according to my [Watchtower guide](https://thesmarthomejourney.com/2021/03/01/watchtower-docker-auto-updates/) |
 
 ## How does it look like? I need more details
 You can find more images and a details in my [blog post](https://thesmarthomejourney.com/2021/01/09/custom-smart-home-server-hub/)
