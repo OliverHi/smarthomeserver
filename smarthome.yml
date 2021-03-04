@@ -97,4 +97,4 @@ services:
       - TZ=${TZ}
     labels:
       # don't automatically update this container as it might break your setup
-      - com.centurylinklabs.watchtower.enable="false"
+      - "com.centurylinklabs.watchtower.enable=false"

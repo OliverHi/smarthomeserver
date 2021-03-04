@@ -84,7 +84,6 @@ services:
     environment:
       - TZ=${TZ}
       - WATCHTOWER_CLEANUP=true # deleting old unused images automatically
-      - WATCHTOWER_LABEL_ENABLE=true # needed for excluding containers
       # optional for notifications
       #- WATCHTOWER_NOTIFICATIONS=email
       #- WATCHTOWER_NOTIFICATION_EMAIL_FROM=${EMAIL_FROM}
