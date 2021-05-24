@@ -16,28 +16,47 @@ services:
       - 9080:80
       - 9443:443
 
-  pihole:
-    container_name: pihole
-    image: pihole/pihole:latest
+  # alternative adblocker
+  #pihole:
+  #  container_name: pihole
+  #  image: pihole/pihole:latest
+  #  restart: unless-stopped
+  #  ports:
+  #    - "53:53/tcp"
+  #    - "53:53/udp"
+  #    - "67:67/udp"
+  #    - "6080:80/tcp"
+  #    - "6443:443/tcp"
+  #  environment:
+  #    TZ: ${TZ}
+  #    WEBPASSWORD: ${PH_WEBPASSWORD}
+  #  volumes:
+  #     - '${DATADIR}/pihole/etc-pihole/:/etc/pihole/'
+  #     - '${DATADIR}/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
+  #  cap_add:
+  #    - NET_ADMIN
+  #  dns:
+  #    - 127.0.0.1
+  #    - 46.182.19.48
+  #  restart: unless-stopped
+
+  adguard:
+    container_name: adguard
+    image: adguard/adguardhome:latest
     restart: unless-stopped
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "67:67/udp"
-      - "6080:80/tcp"
-      - "6443:443/tcp"
-    environment:
-      TZ: ${TZ}
-      WEBPASSWORD: ${PH_WEBPASSWORD}
+      - "443:443/tcp"
+      - "853:853/tcp"
+      - "784:784/udp"
+      - "3300:3000/tcp"
+      - "3380:80/tcp"
     volumes:
-       - '${DATADIR}/pihole/etc-pihole/:/etc/pihole/'
-       - '${DATADIR}/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
+       - '${DATADIR}/adguard/workdir:/opt/adguardhome/work'
+       - '${DATADIR}/adguard/confdir:/opt/adguardhome/conf'
     cap_add:
       - NET_ADMIN
-    dns:
-      - 127.0.0.1
-      - 46.182.19.48
-    restart: unless-stopped
 
   # alternative unifi image. One is enough
   #unifi:
@@ -76,6 +95,8 @@ services:
       - 8880:8880
       - 6789:6789
       - 5514:5514
+    labels: # better keep this one up to date manually
+      - "com.centurylinklabs.watchtower.enable=false"
 
   watchtower:
     image: containrrr/watchtower
@@ -92,3 +113,6 @@ services:
       #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT=${SMTP_PORT}
       #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER=${SMTP_USER}
       #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD=${SMTP_PASSWORD}
+      # alternative for notification via pushover
+      #- WATCHTOWER_NOTIFICATIONS=shoutrrr
+      #- WATCHTOWER_NOTIFICATION_URL=pushover://shoutrrr:${PO_TOKEN}@${PO_USERKEY}
