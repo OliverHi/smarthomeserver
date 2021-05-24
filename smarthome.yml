@@ -34,6 +34,8 @@ services:
       interval: 30s
       timeout: 1s
       retries: 24
+    ports:
+      - 127.0.0.1:8086:8086
 
   tasmoadmin:
     image: "raymondmm/tasmoadmin"
