@@ -46,8 +46,11 @@ In the hosting.yml:
 | ------------- | ------------- | ------------- |
 | Heimdall  | 9080  | - |
 | PiHole  | 6080  | There is a nice in-depth guide [here](https://www.smarthomebeginner.com/pi-hole-setup-guide/) |
+| Adguard Home | 3380 | You can follow my setup guide [here](https://thesmarthomejourney.com/2021/05/24/adguard-pihole-dns-ad-blocker/)|
 | Unifi controller | 8080  | Just follow the setup wizard |
 | Watchtower | - | This is set up according to my [Watchtower guide](https://thesmarthomejourney.com/2021/03/01/watchtower-docker-auto-updates/) |
+
+You should only use one adblocker (Adguard Home or PiHole) at a time as they use the same ports.
 
 ## How does it look like? I need more details
 You can find more images and a details in my [blog post](https://thesmarthomejourney.com/2021/01/09/custom-smart-home-server-hub/)
