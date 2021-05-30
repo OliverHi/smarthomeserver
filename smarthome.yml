@@ -23,6 +23,12 @@ services:
       - "${DATADIR}/grafana/data:/var/lib/grafana"
     ports:
       - 3000:3000
+    # uncomment this if you wanta to allow anonymus acces to Grafana for embedding (e.g. in Home Assistant dashboards)
+    #environment:
+    #  - GF_AUTH_DISABLE_LOGIN_FORM=true
+    #  - GF_AUTH_ANONYMOUS_ENABLED=true
+    #  - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    #  - GF_SECURITY_ALLOW_EMBEDDING=true
 
   influxdb:
     image: "influxdb:1.8"
