@@ -64,6 +64,10 @@ services:
       - /dev/ttyACM0:/dev/ttyACM0
     environment:
       - TZ=${TZ}
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
  
   zigbee2mqttAssistant:
     image: carldebilly/zigbee2mqttassistant
@@ -106,3 +110,7 @@ services:
     labels:
       # don't automatically update this container as it might break your setup
       - "com.centurylinklabs.watchtower.enable=false"
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"

@@ -12,12 +12,20 @@ Create a folder to hold all your docker data. Then clone this repository and upd
 
 Be sure to update the email related settings if you want to use notifications for automatic container updates. If you have done that uncomment the `WATCHTOWER_NOTIFICATIONS` related variables in the hosting.yml file.
 
+If you want to use Loki/Grafana to see all logs in one place you need to also copy the loki-configuration.yaml file to `${DATADIR}/loki/config/loki-config.yaml`. You need to also install the Loki logging driver or remove the logging commands from the compose files. The installation can be done via
+```
+docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+// or if you are running this on a Raspberry Pi
+docker plugin install grafana/loki-docker-driver:arm-v7 --alias loki --grant-all-permissions
+```
+Alternatively if you are going to use promtail to ingest the logs you need to also copy the promtail-config.yaml file to `${DATADIR}/promtail/config/promtail-config.yaml` and remove the `logging:` parts in the compose yaml files.
+
 Then you can start the containers via docker compose.
 ```
 docker-compose -f hosting.yml up -d
 docker-compose -f smarthome.yml up -d
 
-// to see logs
+// to see logs (some will only be available via Grafana, see below)
 docker-compose -f ...yml logs -f
 
 // to stop
@@ -32,7 +40,7 @@ In the smarthome.yml:
 | ------------- | ------------- | ------------- |
 | Mosquitto  | 1883  | You need to copy the config file above. Can be accessed with a MQTT client like MQTT explorer |
 | InfluxDB  | only internally available from other containers  | - |
-| Grafana | 3000  | Setup can be done according to my [Grafana dashboard guide](https://thesmarthomejourney.com/2020/07/20/smart-home-dashboards-grafana/) |
+| Grafana | 3000  | Setup can be done according to my [Grafana dashboard guide](https://thesmarthomejourney.com/2020/07/20/smart-home-dashboards-grafana/). You can use this to view logs according to [the Loki guide](https://thesmarthomejourney.com/2021/08/23/loki-grafana-log-aggregation/) |
 | TasmoAdmin  | 3080  | just let it scan your network for devices |
 | Zigbee2MQTT  | -  | Setup can be done according to my [Zigbee2MQTT guide](https://thesmarthomejourney.com/2020/05/11/guide-zigbee2mqtt/) |
 | Zigbee2MQTTAssistant  | 8880  | - |
@@ -49,8 +57,12 @@ In the hosting.yml:
 | Adguard Home | 3380 | You can follow my setup guide [here](https://thesmarthomejourney.com/2021/05/24/adguard-pihole-dns-ad-blocker/)|
 | Unifi controller | 8080  | Just follow the setup wizard |
 | Watchtower | - | This is set up according to my [Watchtower guide](https://thesmarthomejourney.com/2021/03/01/watchtower-docker-auto-updates/) |
+| Loki | 3100 | This is set up according to my [Loki guide](https://thesmarthomejourney.com/2021/08/23/loki-grafana-log-aggregation/) |
 
 You should only use one adblocker (Adguard Home or PiHole) at a time as they use the same ports.
+
+## Logging
+If something is not working, check the logs first! Some service logs can only be viewed directly via `docker logs containername` or `docker-compose -f yamlname.yaml logs`. The important services are pushing their logs to Loki which collects all of them. You can use Grafana to view them all. I describe this in more detail [here](https://thesmarthomejourney.com/2021/08/23/loki-grafana-log-aggregation/). You need to install the Loki logging driver (see installation part above) for this to work or slightly change the compose files by removing the custom logging sections.
 
 ## How does it look like? I need more details
 You can find more images and a details in my [blog post](https://thesmarthomejourney.com/2021/01/09/custom-smart-home-server-hub/)

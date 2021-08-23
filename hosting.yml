@@ -57,6 +57,10 @@ services:
        - '${DATADIR}/adguard/confdir:/opt/adguardhome/conf'
     cap_add:
       - NET_ADMIN
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
 
   # alternative unifi image. One is enough
   #unifi:
@@ -97,6 +101,10 @@ services:
       - 5514:5514
     labels: # better keep this one up to date manually
       - "com.centurylinklabs.watchtower.enable=false"
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
 
   watchtower:
     image: containrrr/watchtower
@@ -116,3 +124,32 @@ services:
       # alternative for notification via pushover
       #- WATCHTOWER_NOTIFICATIONS=shoutrrr
       #- WATCHTOWER_NOTIFICATION_URL=pushover://shoutrrr:${PO_TOKEN}@${PO_USERKEY}
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+
+  loki:
+  container_name: loki
+  image: grafana/loki:2.3.0
+  restart: unless-stopped
+  ports:
+    - "127.0.0.1:3100:3100"
+  volumes:
+    - ${DATADIR}/loki/config/loki-config.yaml:/etc/loki/loki-config.yaml
+    - ${DATADIR}/loki/data:/data/loki
+  command: -config.file=/etc/loki/loki-config.yaml
+  logging:
+    driver: loki
+    options:
+      loki-url: "http://localhost:3100/loki/api/v1/push"
+
+  # can be used as an alternative to the Loki log driver
+  # promtail:
+  #   container_name: promtail
+  #   image: grafana/promtail:2.3.0
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - ${DATADIR}/promtail/config/promtail-config.yaml:/etc/promtail/promtail-config.yaml
+  #   command: -config.file=/etc/promtail/promtail-config.yaml
