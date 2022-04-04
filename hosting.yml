@@ -153,3 +153,22 @@ services:
   #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
   #     - ${DATADIR}/promtail/config/promtail-config.yaml:/etc/promtail/promtail-config.yaml
   #   command: -config.file=/etc/promtail/promtail-config.yaml
+
+  duplicati:
+    image: lscr.io/linuxserver/duplicati:2.0.6
+    container_name: duplicati
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      #- CLI_ARGS= #optional
+    volumes:
+      - ${DATADIR}/duplicati/config>:/config
+      - ${DATADIR}:/source
+    ports:
+      - 8200:8200
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"

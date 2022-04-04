@@ -58,6 +58,7 @@ In the hosting.yml:
 | Unifi controller | 8080  | Just follow the setup wizard |
 | Watchtower | - | This is set up according to my [Watchtower guide](https://thesmarthomejourney.com/2021/03/01/watchtower-docker-auto-updates/) |
 | Loki | 3100 | This is set up according to my [Loki guide](https://thesmarthomejourney.com/2021/08/23/loki-grafana-log-aggregation/) |
+| Duplicati | 8200 | This allows you to back up any data from your Docker containers. More details [here](https://thesmarthomejourney.com/2022/04/04/home-assistant-docker-backup/) |
 
 You should only use one adblocker (Adguard Home or PiHole) at a time as they use the same ports.
 
