@@ -61,6 +61,7 @@ services:
       driver: loki
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "200m"
 
   # alternative unifi image. One is enough
   #unifi:
@@ -105,6 +106,7 @@ services:
       driver: loki
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "200m"
 
   watchtower:
     image: containrrr/watchtower
@@ -128,6 +130,7 @@ services:
       driver: loki
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "200m"
 
   loki:
     container_name: loki
@@ -143,6 +146,7 @@ services:
       driver: loki
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "200m"
 
   # can be used as an alternative to the Loki log driver
   # promtail:
@@ -172,3 +176,4 @@ services:
       driver: loki
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "200m"

@@ -68,6 +68,7 @@ services:
       driver: loki
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "500m"
  
   zigbee2mqttAssistant:
     image: carldebilly/zigbee2mqttassistant
@@ -114,3 +115,4 @@ services:
       driver: loki
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "500m"
