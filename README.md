@@ -64,6 +64,7 @@ You should only use one adblocker (Adguard Home or PiHole) at a time as they use
 
 ## Logging
 If something is not working, check the logs first! Some service logs can only be viewed directly via `docker logs containername` or `docker-compose -f yamlname.yaml logs`. The important services are pushing their logs to Loki which collects all of them. You can use Grafana to view them all. I describe this in more detail [here](https://thesmarthomejourney.com/2021/08/23/loki-grafana-log-aggregation/). You need to install the Loki logging driver (see installation part above) for this to work or slightly change the compose files by removing the custom logging sections.
+Loki creates a json file for each services log that is kepts until a restart. Without any restrictions these files can get really big. To avoid this I added a size restriction to the configuration of each service via the `max-size` argument. More details about this can be found [here](https://thesmarthomejourney.com/2022/06/15/loki-log-size-limit/).
 
 ## How does it look like? I need more details
 You can find more images and a details in my [blog post](https://thesmarthomejourney.com/2021/01/09/custom-smart-home-server-hub/)
