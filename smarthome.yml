@@ -57,11 +57,13 @@ services:
       mosquitto:
         condition: service_started
     restart: unless-stopped
+    ports:
+      - 6080:8080 # if you enabled the web UI
     volumes:
       - ${DATADIR}/zigbee2mqtt/data:/app/data
       - /run/udev:/run/udev:ro
     devices:
-      - /dev/ttyACM0:/dev/ttyACM0
+      - /dev/ttyACM0:/dev/ttyACM0 # or whichever port your Zigbee stick is connected to
     environment:
       - TZ=${TZ}
     logging:
