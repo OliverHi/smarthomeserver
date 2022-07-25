@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.37.0
+    container_name: prometheus
+    restart: unless-stopped
+    user: ${PUID}:${PGID}
+    ports:
+      - "9090:9090"
+    volumes:
+      - ${DATADIR}/prometheus/etc:/etc/prometheus
+      - ${DATADIR}/prometheus/data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "10m"
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "10m"
+
+  cadvisor:
+    image: edsonmoreirajr/cadvisor-arm
+    #image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "10m"

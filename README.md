@@ -20,10 +20,17 @@ docker plugin install grafana/loki-docker-driver:arm-v7 --alias loki --grant-all
 ```
 Alternatively if you are going to use promtail to ingest the logs you need to also copy the promtail-config.yaml file to `${DATADIR}/promtail/config/promtail-config.yaml` and remove the `logging:` parts in the compose yaml files.
 
+If you want to use monitoring of your containers and host system via prometheus you should also create a config directory for that and copy the config file from this repository like
+```
+mkdir /some/data/dir/prometheus/etc
+cp prometheus_config.yaml /some/data/dir/prometheus/etc/prometheus.yml
+```
+
 Then you can start the containers via docker compose.
 ```
 docker-compose -f hosting.yml up -d
 docker-compose -f smarthome.yml up -d
+docker-compose -f monitoring.yml up -d
 
 // to see logs (some will only be available via Grafana, see below)
 docker-compose -f ...yml logs -f
@@ -59,6 +66,13 @@ In the hosting.yml:
 | Watchtower | - | This is set up according to my [Watchtower guide](https://thesmarthomejourney.com/2021/03/01/watchtower-docker-auto-updates/) |
 | Loki | 3100 | This is set up according to my [Loki guide](https://thesmarthomejourney.com/2021/08/23/loki-grafana-log-aggregation/) |
 | Duplicati | 8200 | This allows you to back up any data from your Docker containers. More details [here](https://thesmarthomejourney.com/2022/04/04/home-assistant-docker-backup/) |
+
+In the monitoring.yml
+| Service  | Port |  Setup |
+| ------------- | ------------- | ------------- |
+| Prometheus  | 9090  | There is a full explanation [here](https://thesmarthomejourney.com/2022/07/25/monitoring-smarthome-prometheus/) |
+| node exporter  | 9100  | No frontend, see prometheus guide |
+| cadvisor | 8080 | No frontend, see prometheus guide|
 
 You should only use one adblocker (Adguard Home or PiHole) at a time as they use the same ports.
 
