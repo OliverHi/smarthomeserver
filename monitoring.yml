@@ -20,7 +20,7 @@ services:
         max-size: "10m"
 
   node_exporter:
-    image: quay.io/prometheus/node-exporter
+    image: prom/node-exporter
     container_name: node_exporter
     command:
       - '--path.rootfs=/host'
@@ -35,15 +35,20 @@ services:
         max-size: "10m"
 
   cadvisor:
-    image: edsonmoreirajr/cadvisor-arm
     #image: gcr.io/cadvisor/cadvisor
+    image: zcube/cadvisor:latest
     container_name: cadvisor
+    command:
+      - "--docker_only=true"
+      - "--housekeeping_interval=30s"
+      - "--disable_metrics=accelerator,cpu_topology,disk,memory_numa,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp,memory_numa"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
+      - /etc/machine-id:/etc/machine-id:ro
     devices:
       - /dev/kmsg
     restart: unless-stopped
