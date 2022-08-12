@@ -7,8 +7,8 @@ The smart home market is really fragmented. Using different gateways and Apps fr
 ## The hardware
 I am running this on a Raspberry Pi but as these are Docker containers you can run them on pretty much any platform.
 
-## How to start
-Create a folder to hold all your docker data. Then clone this repository and update the .env file. Change the password and IDs and update the path to the folder you just created.
+## How to get started
+Create a folder to hold all your docker data. Then clone this repository and update the .env file. Change the password and IDs and update the path to the folder you just created. Make sure that the data folder belongs to the same user/group ids you are providing in the .env file. If you see any errors errors in the container logs about `Permission denied` or similar then you have to check if that subfolder in your datafolder belongs to the same user the container is using. If you still run into problems add user: `${PUID}:${PGID}` to the container definition to force it to use that user.
 
 Be sure to update the email related settings if you want to use notifications for automatic container updates. If you have done that uncomment the `WATCHTOWER_NOTIFICATIONS` related variables in the hosting.yml file.
 
@@ -24,6 +24,11 @@ If you want to use monitoring of your containers and host system via prometheus 
 ```
 mkdir /some/data/dir/prometheus/etc
 cp prometheus_config.yaml /some/data/dir/prometheus/etc/prometheus.yml
+```
+
+If you want to use the Mosquitto MQTT broker make sure to also copy the provided configuration file like
+```
+cp mosquitto.conf /some/data/dir/mosquitto/config
 ```
 
 Then you can start the containers via docker compose.
