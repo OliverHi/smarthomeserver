@@ -30,6 +30,12 @@ If you want to use the Mosquitto MQTT broker make sure to also copy the provided
 ```
 cp mosquitto.conf /some/data/dir/mosquitto/config
 ```
+and update the IP of your Zigbee bridge (if you use a networked one) or switch to serial port in the same config file. Also make sure to update the `devices:` entry in your `smarthome.yml` file to pass the right serial device to your Docker container in that case.
+
+If you want to use Zigbee2MQTT do not forget to copy the config file and update it via
+```
+cp zigbee2mqtt_configuration.yaml /some/data/dir/zigbee2mqtt/data/configuration.yaml
+```
 
 Then you can start the containers via docker compose.
 ```
@@ -54,8 +60,8 @@ In the smarthome.yml:
 | InfluxDB  | only internally available from other containers  | - |
 | Grafana | 3000  | Setup can be done according to my [Grafana dashboard guide](https://thesmarthomejourney.com/2020/07/20/smart-home-dashboards-grafana/). You can use this to view logs according to [the Loki guide](https://thesmarthomejourney.com/2021/08/23/loki-grafana-log-aggregation/) |
 | TasmoAdmin  | 3080  | just let it scan your network for devices |
-| Zigbee2MQTT  | -  | Setup can be done according to my [Zigbee2MQTT guide](https://thesmarthomejourney.com/2020/05/11/guide-zigbee2mqtt/) |
-| Zigbee2MQTTAssistant  | 8880  | - |
+| Zigbee2MQTT  | -  | Setup can be done according to my [Zigbee2MQTT guide](https://thesmarthomejourney.com/2022/07/19/zigbee2mqtt-quick-start-guide/) |
+| Zigbee2MQTTAssistant  | 8880  | [More info](https://thesmarthomejourney.com/2021/01/13/zigbee2mqttassistant/) |
 | HomeAssistant  | 8123  | Just go to the webpage and follow the setup wizard |
 
 This assumes that you have a Zigbee to USB stick connected to /dev/ttyACM0. Otherwise you need to update one line in the Zigbee2MQTT part. You will also need to provide a config file for mosquitto in the `${DATADIR}/mosquitto/config` folder. There is an example config here in the repo.
