@@ -7,6 +7,9 @@ The smart home market is really fragmented. Using different gateways and Apps fr
 ## The hardware
 I am running this on a Raspberry Pi but as these are Docker containers you can run them on pretty much any platform.
 
+## Login
+I recommend accessing your Pi/server via SSH. If you do make sure to configure it for save usage and change the standard password! It is recommended to use login via SSH keys. I described how to set that up [here](https://thesmarthomejourney.com/2022/11/26/how-to-ssh-into-your-server/)
+
 ## How to get started
 Create a folder to hold all your docker data. Then clone this repository and update the .env file. Change the password and IDs and update the path to the folder you just created. Make sure that the data folder belongs to the same user/group ids you are providing in the .env file. If you see any errors errors in the container logs about `Permission denied` or similar then you have to check if that subfolder in your datafolder belongs to the same user the container is using. If you still run into problems add user: `${PUID}:${PGID}` to the container definition to force it to use that user.
 
@@ -23,19 +26,19 @@ Alternatively if you are going to use promtail to ingest the logs you need to al
 If you want to use monitoring of your containers and host system via prometheus you should also create a config directory for that and copy the config file from this repository like
 ```
 mkdir /some/data/dir/prometheus/etc
-cp prometheus_config.yaml /some/data/dir/prometheus/etc/prometheus.yml
+cp prometheus_config.yaml ${DATADIR}/prometheus/etc/prometheus.yml
 ```
 
 If you want to use the Mosquitto MQTT broker make sure to also copy the provided configuration file like
 ```
-cp mosquitto.conf /some/data/dir/mosquitto/config
+cp mosquitto.conf ${DATADIR}/mosquitto/config
 ```
-and update the IP of your Zigbee bridge (if you use a networked one) or switch to serial port in the same config file. Also make sure to update the `devices:` entry in your `smarthome.yml` file to pass the right serial device to your Docker container in that case.
 
 If you want to use Zigbee2MQTT do not forget to copy the config file and update it via
 ```
-cp zigbee2mqtt_configuration.yaml /some/data/dir/zigbee2mqtt/data/configuration.yaml
+cp zigbee2mqtt_configuration.yaml ${DATADIR}/zigbee2mqtt/data/configuration.yaml
 ```
+and update the IP of your Zigbee bridge (if you use a networked one) or switch to serial port in the same config file. Also make sure to update the `devices:` entry in your `smarthome.yml` file to pass the right serial device to your Docker container in that case.
 
 Then you can start the containers via docker compose.
 ```
@@ -45,6 +48,8 @@ docker-compose -f monitoring.yml up -d
 
 // to see logs (some will only be available via Grafana, see below)
 docker-compose -f ...yml logs -f
+// to see if containers are running
+docker-compose -f ...yml ps
 
 // to stop
 docker-compose -f ...yml down
@@ -63,8 +68,6 @@ In the smarthome.yml:
 | Zigbee2MQTT  | -  | Setup can be done according to my [Zigbee2MQTT guide](https://thesmarthomejourney.com/2022/07/19/zigbee2mqtt-quick-start-guide/) |
 | Zigbee2MQTTAssistant  | 8880  | [More info](https://thesmarthomejourney.com/2021/01/13/zigbee2mqttassistant/) |
 | HomeAssistant  | 8123  | Just go to the webpage and follow the setup wizard |
-
-This assumes that you have a Zigbee to USB stick connected to /dev/ttyACM0. Otherwise you need to update one line in the Zigbee2MQTT part. You will also need to provide a config file for mosquitto in the `${DATADIR}/mosquitto/config` folder. There is an example config here in the repo.
 
 In the hosting.yml:
 
@@ -85,7 +88,7 @@ In the monitoring.yml
 | node exporter  | 9100  | No frontend, see prometheus guide |
 | cadvisor | 8080 | No frontend, see prometheus guide|
 
-You should only use one adblocker (Adguard Home or PiHole) at a time as they use the same ports.
+You should only use one adblocker (Adguard Home or PiHole) at a time as they use the same ports. If you want to run a second Adguard Home instance somewhere else as a backup and still keep the setting in sync then follow [this article](https://thesmarthomejourney.com/2023/02/12/adguardhome-sync-instances/). The needed container is already in the hosting.yml file.
 
 ## Logging
 If something is not working, check the logs first! Some service logs can only be viewed directly via `docker logs containername` or `docker-compose -f yamlname.yaml logs`. The important services are pushing their logs to Loki which collects all of them. You can use Grafana to view them all. I describe this in more detail [here](https://thesmarthomejourney.com/2021/08/23/loki-grafana-log-aggregation/). You need to install the Loki logging driver (see installation part above) for this to work or slightly change the compose files by removing the custom logging sections.
