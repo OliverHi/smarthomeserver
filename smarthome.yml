@@ -87,7 +87,7 @@ services:
   homeassistant:
     container_name: homeassistant
     restart: unless-stopped
-    image: homeassistant/raspberrypi4-homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable # or chose any version you like
     #devices:
     #  - /dev/ttyUSB0:/dev/ttyUSB0
     #  - /dev/ttyUSB1:/dev/ttyUSB1
