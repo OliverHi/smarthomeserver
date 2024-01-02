@@ -78,8 +78,11 @@ In the hosting.yml:
 | Adguard Home | 3380 | You can follow my setup guide [here](https://thesmarthomejourney.com/2021/05/24/adguard-pihole-dns-ad-blocker/)|
 | Unifi controller | 8080  | Just follow the setup wizard |
 | Watchtower | - | This is set up according to my [Watchtower guide](https://thesmarthomejourney.com/2021/03/01/watchtower-docker-auto-updates/) |
+| Diun | - | This is set up according to my [Diun guide](https://thesmarthomejourney.com/2024/01/02/diun-container-notifications/) |
 | Loki | 3100 | This is set up according to my [Loki guide](https://thesmarthomejourney.com/2021/08/23/loki-grafana-log-aggregation/) |
 | Duplicati | 8200 | This allows you to back up any data from your Docker containers. More details [here](https://thesmarthomejourney.com/2022/04/04/home-assistant-docker-backup/) |
+
+You really only need one way of notifying you about Docker image updates so I would recommend running either Watchtower or Diun, depening on whether you want automatic updates or not.
 
 In the monitoring.yml
 | Service  | Port |  Setup |

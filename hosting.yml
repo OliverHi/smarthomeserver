@@ -132,6 +132,27 @@ services:
         loki-url: "http://localhost:3100/loki/api/v1/push"
         max-size: "200m"
 
+  # realistically you only need one: Watchtower or diun 
+  diun:
+    container_name: diun
+    image: crazymax/diun:4.26
+    command: serve
+    volumes:
+      - ${DATADIR}/diun/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=${TZ}
+      - DIUN_WATCH_SCHEDULE=0 19 * * FRI,SAT,SUN
+      - DIUN_PROVIDERS_DOCKER=true
+      - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
+      - DIUN_NOTIF_PUSHOVER_TOKEN=${DIUN_PO_TOKEN}
+      - DIUN_NOTIF_PUSHOVER_RECIPIENT=${DIUN_PO_RECIPIENT}
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        max-size: "100m"
+
   loki:
     container_name: loki
     image: grafana/loki:2.3.0
