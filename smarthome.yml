@@ -118,3 +118,17 @@ services:
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
         max-size: "500m"
+
+  govee2mqtt:
+    image: ghcr.io/wez/govee2mqtt:latest # or chose any version
+    container_name: govee2mqtt
+    restart: unless-stopped
+    environment:
+      # - GOVEE_API_KEY=${GOVEE_API_KEY} # needed for online access, see https://developer.govee.com/reference/apply-you-govee-api-key
+      - GOVEE_MQTT_HOST=homeserver # point to this server as it runs mosquitto
+      - GOVEE_MQTT_PORT=1883
+      - GOVEE_TEMPERATURE_SCALE=C
+      - RUST_LOG_STYLE=always
+      - TZ={TZ}
+      # - GOVEE_LAN_SCAN=192.168.3.25,192.168.3.26 # list your device IPs here if they are not found automatically
+    network_mode: host

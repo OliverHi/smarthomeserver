@@ -68,6 +68,7 @@ In the smarthome.yml:
 | Zigbee2MQTT  | -  | Setup can be done according to my [Zigbee2MQTT guide](https://thesmarthomejourney.com/2022/07/19/zigbee2mqtt-quick-start-guide/) |
 | Zigbee2MQTTAssistant  | 8880  | [More info](https://thesmarthomejourney.com/2021/01/13/zigbee2mqttassistant/) |
 | HomeAssistant  | 8123  | Just go to the webpage and follow the setup wizard |
+| Govee2MQTT  | 8056  | Just start or adjust according to [this guide](https://thesmarthomejourney.com/2025/02/22/govee-h6076-with-home-assistant/) |
 
 In the hosting.yml:
 
